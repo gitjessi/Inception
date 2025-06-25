@@ -1,0 +1,191 @@
+
+COMMANDE_DOCKER
+
+## Creer et lancer un conteneur
+
+...bash
+
+	docker run <nom de l'image>
+
+# Lister des conteneurs
+
+...bash
+
+	docker ps 
+	docker container ps
+
+# Lister tous les conteneurs
+
+...bash
+
+	docker ps -a
+	docker container ps -a
+
+# Lister toutes les images
+
+...bash
+
+	docker image ls
+	docker images
+
+# Supprimer un ou des conteneurs // avant de supp un conteneur il faut l'arreter ( mode exited et non up)
+
+...bash
+
+	docker rm <id du conteneur> ou <3 premieres lettre du conteneur>:tag
+	docker container rm <id du conteneur> ou <3 premieres lettre du conteneur>:tag
+
+# Supprimer un ou plusieurs images
+
+...bash
+
+	docker image rm <id de l'image> ou <3 premieres lettre de l'image>
+	docker rmi <id de l'image> ou <3 premieres lettre de l'image>
+
+##`` toujours supprimer le conteneur avant l'image sinon conflit ... ``
+
+# Lancer un conteneur et interagir avec lui
+
+...bash
+
+	docker run -it <nom de l'image>
+
+# Comment creer un conteneur et le supprimer automatiquement
+
+...bash
+
+	docker run -it --rm <nom de l'image>
+
+# Redemarrer un conteneur
+
+...bash
+
+	docker start <id conteneur>
+
+# Comment arreter un conteneur
+
+...bash
+
+	docker stop <id conteneur>
+
+# Entree et interagir dans un conteneur (reste en UP)
+
+...bash
+
+	docker exec -it <id conteneur> bash  //exec permet d'executer une commande ou programme sans rentrer dans le conteneur
+	ex : docker exec <id> touch ficher.txt
+
+# Redemarrer et interagir avec un conteneur en une ligne de commande
+
+...bash
+
+	docker start -ai <id>
+
+# Installer un programme dans le conteneur
+
+...bash
+
+	apt update pour mettre a jour (apt = ubuntu)
+	apt install -y <nom de programme>
+
+## volume
+
+### mappe
+
+... bash
+
+	docker run -it --rm -v <dossier local>:/dossier conteneur> <image>
+
+### manage
+
+# Creer un volume 
+
+... bash
+
+	docker volume create <choisir nom volume>
+
+# Lister les volumes
+
+...bash
+
+	docker volume ls
+
+# Supprimer un volume
+
+...bash
+
+	docker volume rm <nom du volume>
+
+# Lier un volume manage
+
+...bash
+
+	docker run -it --rm -v <nom du volume>:</dossier conteneur> <image>
+
+# Information du volume
+
+...bash
+
+	docker volume inspect <nom du volume>
+
+### Port
+
+	docker run -it --rm -p <port de notre machine local>:<port du conteneur> nginx
+		faire sur internet http:localhost:<port de notre machine local> pour voir le contenu du port de nginx
+
+cette commande permet de de recuperer des informations du conteneur(port du conteneur) via notre port local
+
+### Faire communiquer plusieurs conteneurs
+
+	_ creer 2 conteneurs
+
+	_ telecharger et installer 2 programmes dans chaque conteneur
+		PING // permet de communiquer, d'envoyer un paquet dans une autre machine
+	  		apt update && apt install -y iputils-ping
+	 	IP // permet de connaitre l'adresse IP du conteneur ou machine
+			apt update && apt install -y iproute2
+
+	- verification des installations
+		ping -h // aide
+		ip -h // aide
+	
+	- recuperer l'IP de chaque conteneur // faire cette commande pour chaque conteneur
+
+		 ip -c a
+	
+	- etablir la communication des conteneurs 
+
+		ping <adresse ip du destinataire conteneur> ex 127.17.0.2/16
+		--- envoi des paquets ---
+
+#### Reseau
+
+# Lister les reseaux
+
+	docker network ls
+
+# Creer un reseau
+
+	docker network create --driver=bridge <choisir nom de notre reseau>
+
+# cree un conteneur et le connecter direct a un reseau
+
+	docker run -it --rm --network=<nom du reseau> --name=<choisir un nom du conteneur> <image>
+
+# connecter le 1er conteneur au 2eme qui ont les meme reseau
+
+	ping <nom du conteneur destinataire>
+
+# connecter des conteneurs a un resau
+
+	Creer un conteneur sans le reseau
+	rester dans le terminal en dehors du conteneur
+	puis faire cette commande
+		docker network connect <nom du reseau> <nom du conteneur>
+	faire la meme chose pour un autre conteneur avec le mm reseau
+
+	ping <nom du conteneur destinataire>
+
+# verifier quel conteneur est relier au reseau
+
+	docker network inspect <nom du reseau>

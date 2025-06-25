@@ -1,0 +1,73 @@
+
+# Docker Compose file for setting up a MariaDB service
+# This file defines the service, its image, environment variables, volumes, and networks.
+# une image Docker est un modèle pour créer des conteneurs, 
+#tandis qu'un conteneur est une instance d'une image en cours d'exécution.
+# Le fichier de configuration est écrit en YAML, un format lisible par l'homme pour
+#décrire les services, les volumes et les réseaux nécessaires à l'application.
+
+version: '3.8' # specifie la version du fichier de configuration // dernier version stable
+
+services: # Un service est un conteneur Docker décrit avec une configuration précise
+  mariadb: # Nom du service, utilisé pour identifier le conteneur dans le réseau Docker
+    container_name: mariadb # Nom du conteneur pour faciliter la gestion
+    build: ./requirements/mariadb # Chemin vers le Dockerfile pour construire l'image
+    image: mariadb # Nom de l'image Docker pour le service MariaDB
+    env_file: .env # Fichier d'environnement contenant les variables nécessaires
+    restart: always # Redémarre le conteneur automatiquement en cas d'arrêt
+    secrets:
+      - db_root_password # Utilisation d'un secret Docker pour le mot de passe root de la base de données
+      - db_password # Utilisation d'un secret Docker pour le mot de passe de l'utilisateur de la base de données
+    volumes:
+      - mariadb_data:/var/lib/mysql # Volume pour persister les données de la base de données
+    networks:
+      - inception_network # Réseau Docker sur lequel le service sera connecté
+    
+    wordpress:
+      wordpress:
+        container_name: wordpress
+        build: ./requirements/wordpress
+        image: wordpress_image
+        env_file: .env
+        secrets:
+          - credentials # Utilisation d'un secret Docker pour les identifiants de WordPress
+        depends_on:
+          - mariadb # Dépendance au service MariaDB pour s'assurer qu'il est démarré avant WordPress
+        environment: # Variables d'environnement pour configurer le service MariaDB
+          - WORDPRESS_DB_HOST: mariadb:3306
+          - WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+          - WORDPRESS_DB_USER: ${MYSQL_USER}
+          - WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD} # Mot de passe pour l'utilisateur de la base de données
+      
+      nginx:
+        build: ./requirements/nginx
+        container_name: nginx
+        retart: always
+        env_file: .env
+        ports:
+          -"443:443" # Port 443 pour HTTPS
+        volumes:
+          - wordpress:/var/www/wordpress:ro # Volume pour monter les fichiers WordPress en lecture seule
+        depepends_on:
+          - wordpress # Dépendance au service WordPress pour s'assurer qu'il est démarré avant Nginx
+        networks:
+          - inception_network # Réseau Docker sur lequel le service Nginx sera connecté
+
+volumes: # Définition des volumes pour la persistance des données //  Volume pour stocker les données de la base de données MariaDB 
+  mariadb_data:
+    driver: local #// Gère où et comment le stockage est fait // local # pour un stockage local sur l'hôte
+  wordpress:
+    driver: local # Volume pour stocker les données de WordPress, comme les fichiers téléchargés et les thèmes
+
+networks: # Définition des réseaux pour la communication entre les conteneurs
+  inception_network:
+    driver: bridge # Réseau Docker de type pont pour permettre la communication entre les conteneurs // Gère comment 
+    #les conteneurs communiquent entre eux et avec l'hôte
+
+secrets:
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  db_password:
+    file: ../secrets/db_password.txt
+  credentials:
+    file: ../secrets/credentials.txt    
