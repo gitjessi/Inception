@@ -1,21 +1,24 @@
 
-COMMANDE_DOCKER
+# COMMANDE_DOCKER
 
-Pour enlever le sudo 
+``pour enlever le sudo``
 
-... bash
-	 sudo usermod -aG docker $USER
-	 puis rafraichir le terminal
+...bash
+	
+	sudo usermod -aG docker $USER
 
-	pemet de rajouter notre USER au groupe docker
+puis rafraichir le terminal
+pemet de rajouter notre USER au groupe docker
 
-## Creer et lancer un conteneur
+# Conteneur
+
+## Créer et lancer un conteneur
 
 ...bash
 
 	docker run <nom de l'image>
 
-## Creer un conteneur avec un nom et un hostname personnalisee
+## Créer un conteneur avec un nom et un hostname personnalisee
 
 ...bash
 
@@ -23,7 +26,7 @@ Pour enlever le sudo
 
 	docker run -it --name <choisir un nom de conteneur> --hostname <choisir un nom root> <image>
 
-# Lister des conteneurs
+## Lister des conteneurs
 
 ...bash
 
@@ -33,7 +36,7 @@ Pour enlever le sudo
 	docker ps -q
 	permet de lister les Id des conteneurs actifs
 
-# Lister tous les conteneurs
+## Lister tous les conteneurs
 
 ...bash
 
@@ -43,14 +46,7 @@ Pour enlever le sudo
 	docker ps -qa
 	permet de lister les Id des conteneurs actifs et inactifs
 
-# Lister toutes les images
-
-...bash
-
-	docker image ls
-	docker images
-
-# Supprimer un ou des conteneurs // avant de supp un conteneur il faut l'arreter ( mode exited et non up)
+## Supprimer un ou des conteneurs // avant de supp un conteneur il faut l'arreter ( mode exited et non up)
 
 ...bash
 
@@ -60,119 +56,144 @@ Pour enlever le sudo
 	docker rm -f $(docker ps -q)
 	permet de supprimer tous les conteneurs actifs
 
+	docker rm -f <nom du conteneur>
+	permet de forcer la suppression du conteneur sans le stopper
 	docker rm -f $(docker ps -qa)
 	permet de supprimer tous les conteneurs actifs et inactifs
 
-# Supprimer un ou plusieurs images
+
+# Image
+
+## Lister toutes les images
+
+...bash
+
+	docker image ls
+	docker images
+
+
+## Supprimer un ou plusieurs images
 
 ...bash
 
 	docker image rm <id de l'image> ou <3 premieres lettre de l'image>
 	docker rmi <id de l'image> ou <3 premieres lettre de l'image>
 
-##`` toujours supprimer le conteneur avant l'image sinon conflit ... ``
+`` toujours supprimer le conteneur avant l'image sinon conflit ... ``
 
-# Lancer un conteneur et interagir avec lui
+
+# Conteneur 
+
+## Lancer un conteneur et interagir avec lui
 
 ...bash
 
 	docker run -it <nom de l'image>
 
-# Comment creer un conteneur et le supprimer automatiquement
+	le nom du conteneur sera choisi par default
+
+## Créer un conteneur et le supprimer automatiquement
 
 ...bash
 
 	docker run -it --rm <nom de l'image>
 
-# Redemarrer un conteneur
+## Redemarrer un conteneur
 
 ...bash
 
 	docker start <id conteneur>
 
-# Comment arreter un conteneur
+## Arreter un conteneur
 
 ...bash
 
 	docker stop <id conteneur>
 
-# Entree et interagir dans un conteneur (reste en UP)
+## Entrer et interagir dans un conteneur (reste en UP)
 
 ...bash
 
-	docker exec -it <id conteneur> bash  //exec permet d'executer une commande ou programme sans rentrer dans le conteneur
+	docker exec -it <id conteneur> bash 
+	
+	--> exec permet d'executer une commande ou programme sans rentrer dans le conteneur
 	ex : docker exec <id> touch ficher.txt
 
-# Redemarrer et interagir avec un conteneur en une ligne de commande
+## Redemarrer et interagir avec un conteneur en une ligne de commande
 
 ...bash
 
 	docker start -ai <id>
 
-# Installer un programme dans le conteneur
+## Installer un programme dans le conteneur
 
 ...bash
 
 	apt update pour mettre a jour (apt = ubuntu)
 	apt install -y <nom de programme>
 
-### volume
+# volume
 
-## mappe
+## mapper
 
 ... bash
 
 	docker run -it --rm -v <dossier local>:/dossier conteneur> <image>
 
-## manage
+## manager
 
-# Creer un volume 
+### Creer un volume 
 
 ... bash
 
 	docker volume create <choisir nom volume>
 
-# Lister les volumes
+### Lister les volumes
 
 ...bash
 
 	docker volume ls
 
-# Supprimer un volume
+### Supprimer un volume
 
 ...bash
 
 	docker volume rm <nom du volume>
 
-# Lier un volume manage
+### Lier un volume manage
 
 ...bash
 
 	docker run -it --rm -v <nom du volume>:</dossier conteneur> <image>
 
-# Information du volume
+### Information du volume
 
 ...bash
 
 	docker volume inspect <nom du volume>
 
-### Mapper des ports
+# Port	
+
+## Mapper des ports
 
 	docker run -it --rm -p <port de notre machine local>:<port du conteneur> nginx
 		faire sur internet http:localhost:<port de notre machine local> pour voir le contenu du port de nginx
 		 ou
 		faire dans le terminal :: curl 127.80.0.33:8080 
+		curl < adress ip du reseau >:<port local>
+		ou 
+		curl http://localhost:<port local>
 
-								curl < adress ip du reseau >:<port local>
 		pour connaitre l'adresse ip d'un reseau faire "ifconfig"
 
 cette commande permet de de recuperer des informations du conteneur(port du conteneur) via notre port local
 
-### Faire communiquer plusieurs conteneurs
+## Faire communiquer plusieurs conteneurs grace a IP et PING
 
 	_ creer 2 conteneurs
 
 	_ telecharger et installer 2 programmes dans chaque conteneur
+
 		PING // permet de communiquer, d'envoyer un paquet dans une autre machine
 	  		apt update && apt install -y iputils-ping
 
@@ -192,64 +213,81 @@ cette commande permet de de recuperer des informations du conteneur(port du cont
 		ping <adresse ip du destinataire conteneur> ex 127.17.0.2/16
 		--- envoi des paquets ---
 
-#### Reseau
+# Reseau
 
-# Lister les reseaux
+## Lister les reseaux
 
 	docker network ls
 
-#Isoler un conteneur
+## Isoler un conteneur
 
 	docker run --rm -it --network=non <image>
 
-# Creer un reseau
+## Créer un reseau
 
 	docker network create --driver=bridge <choisir nom de notre reseau>
 
-# cree un conteneur et le connecter direct a un reseau
+## Créer un reseau avec une plage d'IP
+
+	docker network create --driver=bridge --subnet=192.168.0.0/24 <choisir nom du reseau>
+
+## Lister les reseaux
+
+	docker network ls
+
+## Créer un conteneur et le connecter direct a un reseau
 
 	docker run -it --rm --network=<nom du reseau> --name=<choisir un nom de conteneur> <image>
 
-# connecter le 1er conteneur au 2eme qui ont les meme reseau
+## Connecter le 1er conteneur au 2eme qui ont les meme reseau
 
-	ping <nom du conteneur destinataire>
+	"dans le 1er conteneur" ping <nom du conteneur 2>
 
-# Creer et ensuite connecter des conteneurs a un resau
+## Créer et ensuite connecter des conteneurs a un resau
 
 	Creer un conteneur sans le reseau
 		docker run -it --name=<nom du reseau> <image>
+
 	rester dans le terminal en dehors du conteneur
 	puis faire cette commande
+
 		docker network connect <nom du reseau> <nom du conteneur>
+
 	faire la meme chose pour un autre conteneur avec le mm reseau
 
 	ping <nom du conteneur destinataire>
 
-# verifier quel conteneur est relier au reseau
+## Verifier quel conteneur est relier au reseau
 
 	docker network inspect <nom du reseau>
 
-# deconnecter les conteneurs du les reseaux
+## Déconnecter les conteneurs du les reseaux
 
 	docker network disconnect <nom du reseau> <nom du conteneur>
 
-# Supprimer le reseau ou les reseaux
+## Supprimer le reseau ou les reseaux
 
 	docker network rm <nom du reseau> ...
 
-##########Dockerfile##########
+# Dockerfile
 
-#### Creer une image personnalisee avec le fichier Dockerfile
+## Créer une image personnalisee avec le fichier Dockerfile
+
+...Dockerfile
 
 	FROM alpine:3.19 permet de creer une image avec une image de base
 
-	ensuite faire apt update de faire la mise a jour
+	ensuite faire
+
+	apt update 
+
+	permet de faire la mise a jour
 	puis installer les programmes que l'on veut
 
 	apt install -y <nom du programme>
 
 
-# Commment a partir du Dockerfile creer une image personnalisee
+## Créer une image personnalisee a partir du Dockerfile
 
 	... bash
 
@@ -261,14 +299,16 @@ cette commande permet de de recuperer des informations du conteneur(port du cont
 
 			docker run -it --rm <nom de l'image que l'on vient de creer>
 
-# Ajouter l'image au DockerHUB
+## Ajouter l'image au DockerHUB
 
-	# cree un compte sur docker up et faire un repository
+	aller sur le site docker hub et creer un compte et faire un repository
+
+	sur le terminal : 
 
 	docker tag <image> <repository>
 	docker push <repository>
 
-# voir son login 
+## Voir son login 
 
 	docker login
 		si pas connecter 
@@ -278,7 +318,9 @@ cette commande permet de de recuperer des informations du conteneur(port du cont
 
 	docker push <repository>
 
-# docker-compose
+# Docker-compose
+
+## verifier et installer docker-compose
 
 	- verifier si il existe dans notre terminal
 		docker compose version 
@@ -289,14 +331,16 @@ cette commande permet de de recuperer des informations du conteneur(port du cont
 	- verification..
 		docker compose version
 
-# compose.yml simple
+## compose.yml simple
+
+...docker-compose.yml
 
 	services:
 		<nom du service>:
 			image: <image de base>
 			container_name: <nom du conteneur>
 
-### Lancer le compose.yml
+## Lancer le compose.yml
 
 ...bash
 
@@ -306,9 +350,11 @@ Lancer en arriere plan :
 
 ...bash
 
-	docker compose up -dans
+	docker compose up -d
 
 ## Interagir avec le conteneur
+
+...docker-compose.yml
 
 	services:
 		<nom du service>:
@@ -319,9 +365,10 @@ Lancer en arriere plan :
 Ensuite utiliser la commande suivante
 
 ...bash 
+
 	docker exec -it <id ou le nom du conteneur> bash
 
-## arreter un conteneur
+## Arreter un conteneur
 
 ...bash
 
@@ -333,9 +380,9 @@ Ensuite utiliser la commande suivante
 
 	docker compose rm
 
-### Volume Mappé
+## Volume Mappé
 
-...bash
+...docker-compose.yml
 
 	services:
 		<nom du service>:
@@ -346,7 +393,9 @@ Ensuite utiliser la commande suivante
 			volumes:
 				- <chemin de dossier local>:<chemin du dossier du conteneur>
 
-## Volume manage
+## Volume managé
+
+...docker-compose.yml
 
 		services:
 		<nom du service>:
@@ -360,11 +409,13 @@ Ensuite utiliser la commande suivante
 		volumes:
 			<nom du volume>:
 
-### Reseau
+# Réseau
 
 	Tous les conteneurs du compose.yml sont automatiquement connecte a un reseau
 
-### Reseau personnalisee
+## Réseau personnalisée
+
+...docker-compose.yml 
 
 	services:
 		<nom du service 1>:
@@ -388,62 +439,7 @@ Ensuite utiliser la commande suivante
 		<nom du reseau>:
 			driver: bridge
 
-#### USER
-
-# Commande pour connaitre l'utilisateur actif
-	whoami
-
-# Creer un utilisateur
-
-	useradd -u 1111 jessi
-	useradd -u <UID>  <choisir un nom user>
-
-## dans le dockerfile 
-
-	FROM: debian
-	RUN useradd -u 1111 jessi
-
-# creer un conteneur avec le dockerfile
-
-	docker build -t <choisir nom de l'image>:<version>  <chemin du dockerfile>
-
-# Creer un repertoire sur ton systeme hôte, et non dans le projet
-
-	mkdir /<nom du volume>/
-	
-# Lancer ce conteneur avec le volume sans utilisateur
-
-	docker run -d --name <choisir un nom de conteneur> -v /<nom du volume>/:<chemin du reperoire qui est dans le conteneur et sera lier au volume> <image>
-
-# Pour que le conteneur reste actif 
-
-	docker run -d --name <choisir un nom de conteneur> -v /<nom du volume>/:<chemin du reperoire qui est dans le conteneur et sera lier au volume> <image>
-	sleep infinity
-
-# Comment savoir quel droit et utilisateur ont acces a nos fichier et peuvent modifier
-
-	ls -la /myvolume/
-
-# Lancer ce conteneur avec le volume AVEC utilisateur
-
-	docker run -d --name <choisir un nom de conteneur> -v /<nom du volume>/:<chemin du reperoire qui est dans le conteneur et sera lier au volume> 
-	-u <nom qui a etait choisi dans le dockerfile> <image> sleep infinity
-
-# se connecter au conteneur avec le nom utlisateur
-
-	docker exec -it <nom du conteneur> bash
-
-# comment donner les permissions a l'utilisateur 
-
-	chown <nom de l'ulisateur> <nom du volume / repertoire>
-
-# connaitre si l'id existe ou pas 
-
-	id <nom de l'utilisateur>
-
-#### reseau bridge
-
-# reseau docker0
+# reseau bridge = docker0 : reseau par defaut de docker, tous les conteneurs sont connectes a ce reseau
 
 	comment le visualiser
 
@@ -455,23 +451,57 @@ Ensuite utiliser la commande suivante
 			sudo update && apt install -y iputils-ping net-tools
 
 
+# USER
 
+## Commande pour connaitre l'utilisateur actif
+	whoami
 
+## Créer un utilisateur
 
+### Dans bash
 
+	useradd -u 1111 jessi
+	useradd -u <UID>  <choisir un nom user>
 
+### Dans le Dockerfile 
 
+	FROM: debian
+	RUN useradd -u 1111 jessi
 
+## Créer un conteneur avec le dockerfile
 
-		
-		
+	docker build -t <choisir nom de l'image>:<version>  <chemin du dockerfile>
 
+## Créer un repertoire sur ton systeme hôte, et non dans le projet
 
-
-
-
-
-
+	mkdir /<nom du volume>/
 	
+## Lancer ce conteneur avec le volume sans utilisateur
 
-		
+	docker run -d --name <choisir un nom de conteneur> -v /<nom du volume>/:<chemin du reperoire qui est dans le conteneur et sera lier au volume> <image>
+
+## Pour que le conteneur reste actif 
+
+	docker run -d --name <choisir un nom de conteneur> -v /<nom du volume>/:<chemin du reperoire qui est dans le conteneur et sera lier au volume> <image>
+	sleep infinity
+
+## Comment savoir quel droit et utilisateur ont acces a nos fichier et peuvent modifier
+
+	ls -la /myvolume/
+
+## Lancer ce conteneur avec le volume AVEC utilisateur
+
+	docker run -d --name <choisir un nom de conteneur> -v /<nom du volume>/:<chemin du reperoire qui est dans le conteneur et sera lier au volume> 
+	-u <nom qui a etait choisi dans le dockerfile> <image> sleep infinity
+
+## Se connecter au conteneur avec le nom utlisateur
+
+	docker exec -it <nom du conteneur> bash
+
+## Donner les permissions a l'utilisateur 
+
+	chown <nom de l'ulisateur> <nom du volume / repertoire>
+
+## Connaitre si l'id existe ou pas 
+
+	id <nom de l'utilisateur>

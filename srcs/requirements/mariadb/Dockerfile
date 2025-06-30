@@ -1,3 +1,5 @@
+#permet de creer une image personnalisee de MariaDB
+
 FROM alpine:3.19
 
 # installation de la base de données MariaDB
@@ -14,3 +16,12 @@ EXPOSE 3306
 USER mysql
 
 CMD ["mysqld"]
+
+
+# creer un groupe utilisateur qui peuvent modifier la base de données
+
+#RUN groupadd appgroup \
+# && useradd -u 1111 -g appgroup jessi \   //ajout d'un utilisateur jessi
+# && mkdir /data \     // creation du dossier data
+# && chown root:appgroup /data \    // attribution du groupe appgroup au dossier data
+# && chmod 770 /data #    // attribution des droits d'écriture et de lecture au groupe appgroup
