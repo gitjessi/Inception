@@ -6,16 +6,28 @@ FROM alpine:3.19
 RUN apk update && apk add --no-cache mariadb mariadb-client
 
 # Copier fichier de configuration si besoin
-COPY ./conf/my.cnf /etc/mysql/my.cnf
+#COPY ./conf/my.cnf /etc/mysql/my.cnf
 
 # Créer les dossiers nécessaires et permissions
-RUN mkdir -p /var/lib/mysql && chown -R mysql:mysql /var/lib/mysql
+RUN mkdir -p /run/mysqld && \
+    mkdir -p /var/lib/mysql && \
+    chown -R mysql:mysql /run/mysqld /var/lib/mysql
+
+ENV MYSQL_ROOT_PASSWORD=root
+ENV MYSQL_USER=wp_user
+ENV MYSQL_PASSWORD=user
+ENV MYSQL_DATABASE=wordpress
+
+COPY conf.cnf /etc/mysql/my.cnf
+
+COPY init.sh /init.sh
+RUN chmod +x /init.sh
 
 EXPOSE 3306
 
 USER mysql
 
-CMD ["mysqld"]
+CMD ["/init.sh"]
 
 
 # creer un groupe utilisateur qui peuvent modifier la base de données
