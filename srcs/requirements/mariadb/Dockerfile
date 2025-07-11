@@ -5,9 +5,6 @@ FROM alpine:3.19
 # installation de la base de données MariaDB
 RUN apk update && apk add --no-cache mariadb mariadb-client
 
-# Copier fichier de configuration si besoin
-#COPY ./conf/my.cnf /etc/mysql/my.cnf
-
 # Créer les dossiers nécessaires et permissions
 RUN mkdir -p /run/mysqld && \
     mkdir -p /var/lib/mysql && \
@@ -18,9 +15,9 @@ ENV MYSQL_USER=wp_user
 ENV MYSQL_PASSWORD=user
 ENV MYSQL_DATABASE=wordpress
 
-COPY conf.cnf /etc/mysql/my.cnf
+COPY conf/50-server.cnf	/etc/mysql/mariadb.conf.d/50-server.cnf
 
-COPY init.sh /init.sh
+COPY tools/init.sh /init.sh
 RUN chmod +x /init.sh
 
 EXPOSE 3306
@@ -37,3 +34,7 @@ CMD ["/init.sh"]
 # && mkdir /data \     // creation du dossier data
 # && chown root:appgroup /data \    // attribution du groupe appgroup au dossier data
 # && chmod 770 /data #    // attribution des droits d'écriture et de lecture au groupe appgroup
+
+
+#% docker run -d --name mariadb-instance -p 3306:3306 maria 
+#% docker exec -it mariadb-instance mysql -u root -p 
