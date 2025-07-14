@@ -15,7 +15,7 @@ ENV MYSQL_USER=wp_user
 ENV MYSQL_PASSWORD=user
 ENV MYSQL_DATABASE=wordpress
 
-COPY conf/50-server.cnf	/etc/mysql/mariadb.conf.d/50-server.cnf
+COPY conf/my.cnf /etc/my.cnf
 
 COPY tools/init.sh /init.sh
 RUN chmod +x /init.sh

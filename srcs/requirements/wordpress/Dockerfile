@@ -1,12 +1,12 @@
 
-FROM debian:buster
+FROM debian:bullseye
 
 # Mise à jour des paquets
 RUN apt-get update && apt-get upgrade -y
 
 # Installation des paquets nécessaires
 RUN apt-get install -y wget \
-    php7.3 \
+    php7.4 \
     php-fpm \
     php-mysql \
     mariadb-client \
@@ -24,7 +24,7 @@ RUN wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz -P /var/www \
 RUN chown -R root:root /var/www/wordpress
 
 # Configuration de PHP
-COPY conf/www.conf /etc/php/7.3/fpm/pool.d/www.conf
+COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 
 # Installation de WP-CLI
 RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
