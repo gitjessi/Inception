@@ -15,9 +15,6 @@ services:
     image: mariadb
     env_file: .env
     restart: unless-stopped
-    secrets:
-      - db_root_password
-      - db_password
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
@@ -30,8 +27,6 @@ services:
     env_file: .env
     volumes:
       - wordpress:/var/www/wordpress
-    secrets:
-      - credentials
     depends_on:
       - mariadb
     restart: on-failure
@@ -46,7 +41,7 @@ services:
     restart: on-failure
     env_file: .env
     ports:
-      - "8443:443"
+      - "10443:443"
     volumes:
       - wordpress:/var/www/wordpress
     depends_on:
@@ -63,11 +58,3 @@ volumes:
 networks:
   inception_network:
     driver: bridge
-
-secrets:
-  db_root_password:
-    file: ../secrets/db_root_password.txt
-  db_password:
-    file: ../secrets/db_password.txt
-  credentials:
-    file: ../secrets/credentials.txt

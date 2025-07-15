@@ -22,7 +22,3 @@ EOF
 fi
 
 exec mysqld --user=mysql --console #--console message d erreur sur la console
-
-
-
-
