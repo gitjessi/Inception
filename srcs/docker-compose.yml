@@ -6,13 +6,13 @@
 # Le fichier de configuration est écrit en YAML, un format lisible par l'homme pour
 #décrire les services, les volumes et les réseaux nécessaires à l'application.
 
-version: '3.8'
+version: '3.3'
 
 services:
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
-    image: mariadb
+    image: mariadb:v1
     env_file: .env
     restart: unless-stopped
     volumes:
@@ -23,7 +23,7 @@ services:
   wordpress:
     container_name: wordpress
     build: ./requirements/wordpress
-    image: wordpress_image
+    image: wordpress:v1
     env_file: .env
     volumes:
       - wordpress:/var/www/wordpress
@@ -38,10 +38,11 @@ services:
   nginx:
     container_name: nginx
     build: ./requirements/nginx
+    image: nginx:v1
     restart: on-failure
     env_file: .env
     ports:
-      - "10443:443"
+      - "443:443"
     volumes:
       - wordpress:/var/www/wordpress
     depends_on:
@@ -49,12 +50,21 @@ services:
     networks:
       - inception_network
 
-volumes:
-  mariadb_data:
-    driver: local
-  wordpress:
-    driver: local
-
 networks:
   inception_network:
     driver: bridge
+      
+volumes:
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/jelecoq/data/mariadb
+      o: bind
+
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/jelecoq/data/wordpress
+      o: bind

@@ -6,8 +6,6 @@ ENV_FILE = srcs/.env
 # Containers
 CONTAINERS = mariadb wordpress nginx
 
-# Volumes (à adapter si tu en as d’autres)
-VOLUMES = wordpress mariadb_data
 
 .PHONY: all build up down clean fclean re logs
 
@@ -23,7 +21,6 @@ down:
 	$(COMPOSE) -f ./srcs/docker-compose.yml down
 
 clean: down
-	docker volume rm $(addprefix $(NAME)_, $(VOLUMES)) 2>/dev/null || true
 	docker rmi $(shell docker images -q --filter=reference="$(NAME)_*") 2>/dev/null || true
 
 fclean: clean

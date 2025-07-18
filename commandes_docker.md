@@ -10,6 +10,16 @@
 puis rafraichir le terminal
 pemet de rajouter notre USER au groupe docker
 
+# changer le nom hostname 
+
+Action	Commande / fichier
+
+Trouver IP locale	ip a ou ipconfig
+
+sudo nano /etc/hosts
+
+	changer le hostname par <name>
+
 # Conteneur
 
 ## Créer et lancer un conteneur

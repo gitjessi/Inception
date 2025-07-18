@@ -7,6 +7,8 @@ Pour enlever le sudo
 	 sudo usermod -aG docker $USER
 	 puis rafraichir le terminal
 
+	 newgrp docker
+
 	pemet de rajouter notre USER au groupe docker
 
 ## Creer et lancer un conteneur
