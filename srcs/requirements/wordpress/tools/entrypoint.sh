@@ -2,7 +2,7 @@
 
 set -e
 
-# Création du dossier /run/php si absent
+# PHP-FPM cherche dossier pour créer un socket ou un PID file,
 mkdir -p /run/php
 
 # Attente de la base de données MariaDB
@@ -25,7 +25,7 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
 
   echo "⚙️ Installation de WordPress..."
   wp core install --allow-root \
-    --url="$WORDPRESS_URL" \
+    --url="$DOMAIN_NAME" \
     --title="$WORDPRESS_TITLE" \
     --admin_user="$WORDPRESS_ADMIN_USER" \
     --admin_password="$WORDPRESS_ADMIN_PASSWORD" \
@@ -44,9 +44,6 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
 else
   echo "✅ wp-config.php déjà présent, on ne le recrée pas."
 fi
-
-# Création du dossier /run/php si absent (évite erreur PHP-FPM)
-mkdir -p /run/php
 
 # Lancement de PHP-FPM au premier plan
 exec /usr/sbin/php-fpm7.4 -F

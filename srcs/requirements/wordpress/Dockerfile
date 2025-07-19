@@ -11,8 +11,8 @@ RUN apt-get install -y wget \
     php-mysql \
     mariadb-client \
     unzip \
-    curl \
-    less
+    curl
+ 
 
 # Téléchargement et extraction de WordPress
 RUN wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz -P /var/www \
