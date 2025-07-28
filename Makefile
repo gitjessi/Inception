@@ -2,6 +2,7 @@ NAME = inception
 
 COMPOSE = docker-compose
 ENV_FILE = srcs/.env
+IMAGES := $(shell docker images -q)
 
 # Containers
 CONTAINERS = mariadb wordpress nginx
@@ -24,7 +25,9 @@ clean: down
 	docker rmi $(shell docker images -q --filter=reference="$(NAME)_*") 2>/dev/null || true
 
 fclean: clean
-	docker system prune -af --volumes
+	docker volume rm srcs_mariadb_data
+	docker volume rm srcs_wordpress
+	if [ -n "$(IMAGES)" ]; then docker rmi -f $(IMAGES); fi
 
 re: fclean all
 

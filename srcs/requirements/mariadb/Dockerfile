@@ -10,11 +10,6 @@ RUN mkdir -p /run/mysqld && \
     mkdir -p /var/lib/mysql && \
     chown -R mysql:mysql /run/mysqld /var/lib/mysql
 
-ENV MYSQL_ROOT_PASSWORD=root
-ENV MYSQL_USER=wp_user
-ENV MYSQL_PASSWORD=user
-ENV MYSQL_DATABASE=wordpress
-
 COPY conf/my.cnf /etc/my.cnf
 
 COPY tools/init.sh /init.sh
@@ -22,10 +17,7 @@ RUN chmod +x /init.sh
 
 EXPOSE 3306
 
-USER mysql
-
 CMD ["/init.sh"]
-
 
 # creer un groupe utilisateur qui peuvent modifier la base de données
 
